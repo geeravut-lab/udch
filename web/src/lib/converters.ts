@@ -1,13 +1,19 @@
 import type { DocumentData, QueryDocumentSnapshot, Timestamp } from "firebase/firestore";
-import type { Appointment, MedicalResult, Medication } from "../types/models";
+import type {
+  Appointment,
+  MedicalResult,
+  Medication,
+  AppDocument,
+  AppNotification,
+  Conversation,
+  ChatMessage,
+} from "../types/models";
 
 function toDate(value: unknown): Date {
   if (value && typeof value === "object" && "toDate" in value) {
     return (value as Timestamp).toDate();
   }
-  if (typeof value === "string" || typeof value === "number") {
-    return new Date(value);
-  }
+  if (typeof value === "string" || typeof value === "number") return new Date(value);
   return new Date();
 }
 
@@ -58,7 +64,57 @@ export function medicationFromDoc(snap: QueryDocumentSnapshot<DocumentData>): Me
   };
 }
 
-/** Format date in Thai Buddhist era style short */
+export function documentFromDoc(snap: QueryDocumentSnapshot<DocumentData>): AppDocument {
+  const d = snap.data();
+  return {
+    id: snap.id,
+    patientId: d.patientId,
+    docType: d.docType ?? "other",
+    title: d.title ?? "",
+    filePath: d.filePath,
+    issuedAt: d.issuedAt,
+    meta: d.meta,
+  };
+}
+
+export function notificationFromDoc(snap: QueryDocumentSnapshot<DocumentData>): AppNotification {
+  const d = snap.data();
+  return {
+    id: snap.id,
+    userId: d.userId,
+    title: d.title ?? "",
+    body: d.body,
+    link: d.link,
+    channel: d.channel ?? "in_app",
+    status: d.status ?? "queued",
+    createdAt: toDate(d.createdAt),
+    readAt: d.readAt ? toDate(d.readAt) : null,
+  };
+}
+
+export function conversationFromDoc(snap: QueryDocumentSnapshot<DocumentData>): Conversation {
+  const d = snap.data();
+  return {
+    id: snap.id,
+    patientId: d.patientId,
+    subject: d.subject,
+    status: d.status ?? "open",
+    participantIds: d.participantIds,
+    lastMessageAt: d.lastMessageAt ? toDate(d.lastMessageAt) : null,
+  };
+}
+
+export function messageFromDoc(snap: QueryDocumentSnapshot<DocumentData>): ChatMessage {
+  const d = snap.data();
+  return {
+    id: snap.id,
+    senderId: d.senderId,
+    body: d.body ?? "",
+    createdAt: toDate(d.createdAt),
+    readAt: d.readAt ? toDate(d.readAt) : null,
+  };
+}
+
 export function formatThaiDate(date: Date, withTime = false): string {
   const d = date.getDate();
   const months = [

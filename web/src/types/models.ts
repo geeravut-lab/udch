@@ -1,5 +1,3 @@
-/** Firestore document shapes — Phase 0–1 */
-
 export type UserRole = "patient" | "caregiver" | "nurse" | "doctor" | "admin";
 
 export type AppointmentStatus =
@@ -48,24 +46,43 @@ export type Medication = {
   reminderTimes?: string[];
 };
 
-export type JourneyStep = {
+export type AppDocument = {
   id: string;
-  sortOrder: number;
+  patientId: string;
+  docType: string;
   title: string;
-  description?: string;
-  status: "done" | "active" | "todo";
-  completedAt?: string;
+  filePath?: string;
+  issuedAt?: string;
   meta?: Record<string, unknown>;
 };
 
-export type CancerJourney = {
+export type AppNotification = {
+  id: string;
+  userId: string;
+  title: string;
+  body?: string;
+  link?: string;
+  channel: string;
+  status: string;
+  createdAt: Date;
+  readAt?: Date | null;
+};
+
+export type Conversation = {
   id: string;
   patientId: string;
-  diagnosis?: string;
-  stage?: string;
-  protocol?: string;
-  status: "active" | "completed" | "paused";
-  steps: JourneyStep[];
+  subject?: string;
+  status: string;
+  participantIds?: string[];
+  lastMessageAt?: Date | null;
+};
+
+export type ChatMessage = {
+  id: string;
+  senderId: string;
+  body: string;
+  createdAt: Date;
+  readAt?: Date | null;
 };
 
 export type FeatureFlags = {
@@ -88,4 +105,13 @@ export const DEFAULT_FLAGS: FeatureFlags = {
   line_notify: false,
   promptpay: true,
   education: true,
+};
+
+export type HospitalInfo = {
+  nameTh: string;
+  nameEn: string;
+  phone: string;
+  mobile?: string;
+  lineId?: string;
+  hours?: string;
 };
