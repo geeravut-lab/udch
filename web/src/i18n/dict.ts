@@ -71,6 +71,14 @@ const th = {
   quickLinks: "เมนูด่วน",
   pdpaNote: "ตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 — ดาวน์โหลดได้ทันที",
   contactHospital: "ติดต่อโรงพยาบาล",
+  nextAppt: "นัดถัดไปของคุณ",
+  viewAllAppt: "ดูนัดทั้งหมด",
+  callHospital: "โทรหา รพ.",
+  noUpcoming: "ยังไม่มีนัดหมายที่กำลังจะถึง",
+  upcomingMore: "นัดหมายถัดไป",
+  unreadCount: "มี {n} รายการใหม่",
+  demoConfirm: "จะลบข้อมูลตัวอย่างเก่าในบัญชีนี้ แล้วใส่ชุดใหม่ ดำเนินการต่อหรือไม่?",
+  exportOk: "ดาวน์โหลดไฟล์ข้อมูลแล้ว",
 } as const;
 
 const en: { [K in keyof typeof th]: string } = {
@@ -144,6 +152,14 @@ const en: { [K in keyof typeof th]: string } = {
   quickLinks: "Quick links",
   pdpaNote: "Under PDPA — download works immediately",
   contactHospital: "Contact hospital",
+  nextAppt: "Your next appointment",
+  viewAllAppt: "All appointments",
+  callHospital: "Call hospital",
+  noUpcoming: "No upcoming appointments",
+  upcomingMore: "Coming up",
+  unreadCount: "{n} new",
+  demoConfirm: "This will replace existing demo data in your account. Continue?",
+  exportOk: "Your data file was downloaded",
 };
 
 export const dictionaries = { th, en } as const;

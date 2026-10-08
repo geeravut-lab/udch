@@ -1,6 +1,7 @@
 import { useI18n } from "../i18n/context";
 import { useAppointments } from "../hooks/useAppointments";
 import { formatThaiDate } from "../lib/converters";
+import { appointmentStatusLabel } from "../lib/statusLabels";
 
 const borderByType: Record<string, string> = {
   blood_test: "var(--sky)",
@@ -12,24 +13,30 @@ const borderByType: Record<string, string> = {
 };
 
 export function AppointmentsPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { appointments, loading, error } = useAppointments({ max: 50 });
 
   return (
     <div className="page">
-      <h3 className="pf" style={{ marginBottom: 12 }}>📅 {t.apptTitle}</h3>
+      <div className="page-header">
+        <h2>📅 {t.apptTitle}</h2>
+      </div>
       {loading && <p className="muted">{t.loading}</p>}
       {error && <div className="error-box">{error}</div>}
       {!loading && !error && appointments.length === 0 && (
-        <div className="empty">{t.apptEmpty}<br /><small>{t.seedHint}</small></div>
+        <div className="empty-state">
+          <div className="emoji">📅</div>
+          <p>{t.apptEmpty}</p>
+          <p style={{ fontSize: "0.9rem" }}>{t.seedHint}</p>
+        </div>
       )}
       {appointments.map((a) => (
-        <div key={a.id} className="card" style={{ borderLeft: `8px solid ${borderByType[a.appointmentType] ?? "var(--teal)"}` }}>
+        <div key={a.id} className="list-card" style={{ ["--accent" as string]: borderByType[a.appointmentType] ?? "var(--teal)" }}>
           <b>{formatThaiDate(a.scheduledAt, true)}</b>
-          <div className="pf">{a.title}</div>
+          <div className="pf" style={{ marginTop: 4 }}>{a.title}</div>
           <small className="muted">{[a.location, a.department, a.preparation].filter(Boolean).join(" · ")}</small>
-          <div style={{ marginTop: 6 }}>
-            <span className="muted" style={{ fontSize: "0.8rem", background: "#e6faf8", padding: "2px 8px", borderRadius: 8 }}>{a.status}</span>
+          <div style={{ marginTop: 8 }}>
+            <span className={`chip status-${a.status}`}>{appointmentStatusLabel(a.status, lang)}</span>
           </div>
         </div>
       ))}

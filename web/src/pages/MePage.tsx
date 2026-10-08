@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useI18n } from "../i18n/context";
 import { useAuth } from "../hooks/useAuth";
 import type { Lang } from "../i18n/dict";
@@ -11,19 +11,21 @@ export function MePage() {
   const { t, lang, setLang } = useI18n();
   const { profile, user, signOut } = useAuth();
   const hospital = useHospitalInfo();
+  const navigate = useNavigate();
   const [seedBusy, setSeedBusy] = useState(false);
-  const [seedMsg, setSeedMsg] = useState("");
+  const [toast, setToast] = useState("");
   const [exportBusy, setExportBusy] = useState(false);
 
   async function onSeed() {
     if (!user) return;
+    if (!confirm(t.demoConfirm)) return;
     setSeedBusy(true);
-    setSeedMsg("");
     try {
       await seedDemoDataForPatient(user.uid);
-      setSeedMsg(t.seedOk);
+      setToast(t.seedOk);
+      setTimeout(() => navigate("/"), 800);
     } catch (err) {
-      setSeedMsg(String(err instanceof Error ? err.message : err));
+      setToast(String(err instanceof Error ? err.message : err));
     } finally {
       setSeedBusy(false);
     }
@@ -34,9 +36,10 @@ export function MePage() {
     setExportBusy(true);
     try {
       await exportMyData(user.uid, { ...profile });
+      setToast(t.exportOk);
     } catch (err) {
       console.error(err);
-      alert(t.errorGeneric);
+      setToast(t.errorGeneric);
     } finally {
       setExportBusy(false);
     }
@@ -44,7 +47,7 @@ export function MePage() {
 
   return (
     <div className="page">
-      <h3 className="pf" style={{ marginBottom: 12 }}>👤 {t.meTitle}</h3>
+      <div className="page-header"><h2>👤 {t.meTitle}</h2></div>
 
       <div className="card">
         <h3>{t.meProfile}</h3>
@@ -80,7 +83,6 @@ export function MePage() {
         <button className="btn secondary" type="button" disabled={seedBusy} onClick={onSeed}>
           {seedBusy ? t.loading : t.demoBtn}
         </button>
-        {seedMsg ? <p className="muted" style={{ marginTop: 10, fontSize: "0.9rem" }}>{seedMsg}</p> : null}
       </div>
 
       <div className="card">
@@ -89,12 +91,13 @@ export function MePage() {
         <button className="btn secondary" type="button" style={{ marginBottom: 8 }} disabled={exportBusy} onClick={onExport}>
           {exportBusy ? t.loading : t.meExport}
         </button>
-        <a className="btn secondary" style={{ marginBottom: 8, display: "block", textAlign: "center" }} href={`tel:${hospital.phone}`}>
+        <a className="btn secondary" style={{ display: "block", textAlign: "center" }} href={`tel:${hospital.phone}`}>
           {t.contactHospital}
         </a>
       </div>
 
       <button className="btn ghost" type="button" onClick={() => signOut()}>{t.logout}</button>
+      {toast ? <div className="toast" role="status">{toast}</div> : null}
     </div>
   );
 }

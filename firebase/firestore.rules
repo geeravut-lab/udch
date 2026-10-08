@@ -28,29 +28,11 @@ service cloud.firestore {
       return signedIn() && uid() == userId;
     }
 
-    // Caregiver active link to patient (permission optional filter)
-    function caregiverLink(patientId) {
-      return signedIn() && exists(
-        /databases/$(database)/documents/caregiverLinks/$(uid() + '_' + patientId)
-      ) && get(
-        /databases/$(database)/documents/caregiverLinks/$(uid() + '_' + patientId)
-      ).data.status == 'active'
-        && get(
-        /databases/$(database)/documents/caregiverLinks/$(uid() + '_' + patientId)
-      ).data.caregiverId == uid();
-    }
-
-    // Fallback: query-style not available in rules; we also allow read if
-    // any active link document lists this caregiver (id convention patient_caregiver)
     function isCaregiverOf(patientId) {
-      return signedIn() && (
-        caregiverLink(patientId)
-        || (
-          exists(/databases/$(database)/documents/caregiverLinks/$(patientId + '_' + uid()))
-          && get(/databases/$(database)/documents/caregiverLinks/$(patientId + '_' + uid())).data.status == 'active'
-          && get(/databases/$(database)/documents/caregiverLinks/$(patientId + '_' + uid())).data.caregiverId == uid()
-        )
-      );
+      return signedIn()
+        && exists(/databases/$(database)/documents/caregiverLinks/$(patientId + '_' + uid()))
+        && get(/databases/$(database)/documents/caregiverLinks/$(patientId + '_' + uid())).data.status == 'active'
+        && get(/databases/$(database)/documents/caregiverLinks/$(patientId + '_' + uid())).data.caregiverId == uid();
     }
 
     function caregiverCanSeeResults(patientId) {
@@ -59,111 +41,125 @@ service cloud.firestore {
           in ['appointments_and_results', 'full'];
     }
 
-    // ----- users -----
+    function isPatientOwner() {
+      return signedIn() && resource.data.patientId == uid();
+    }
+
+    function createsAsPatient() {
+      return signedIn() && request.resource.data.patientId == uid();
+    }
+
     match /users/{userId} {
       allow read: if isOwner(userId) || isStaff() || isCaregiverOf(userId);
       allow create: if isOwner(userId);
-      allow update: if isOwner(userId) || isAdmin();
-      // role / hn changes: prefer Admin SDK only; if client update, block role escalation
-      allow update: if isOwner(userId)
-        && !request.resource.data.diff(resource.data).affectedKeys()
-            .hasAny(['role', 'hn']);
+      allow update: if isAdmin()
+        || (isOwner(userId)
+            && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'hn']));
       allow delete: if isAdmin();
     }
 
-    // ----- journeys -----
     match /journeys/{journeyId} {
       allow read: if isStaff()
         || (signedIn() && resource.data.patientId == uid())
-        || (signedIn() && isCaregiverOf(resource.data.patientId));
-      allow write: if isStaff();
+        || isCaregiverOf(resource.data.patientId);
+      allow create: if isStaff() || createsAsPatient();
+      allow update: if isStaff()
+        || (isPatientOwner() && request.resource.data.patientId == resource.data.patientId);
+      allow delete: if isStaff() || isPatientOwner();
 
       match /steps/{stepId} {
         allow read: if isStaff()
           || get(/databases/$(database)/documents/journeys/$(journeyId)).data.patientId == uid()
-          || isCaregiverOf(
-               get(/databases/$(database)/documents/journeys/$(journeyId)).data.patientId
-             );
-        allow write: if isStaff();
+          || isCaregiverOf(get(/databases/$(database)/documents/journeys/$(journeyId)).data.patientId);
+        allow create, update, delete: if isStaff()
+          || get(/databases/$(database)/documents/journeys/$(journeyId)).data.patientId == uid();
       }
     }
 
-    // ----- appointments -----
     match /appointments/{id} {
       allow read: if isStaff()
         || resource.data.patientId == uid()
         || isCaregiverOf(resource.data.patientId);
-      allow create: if isStaff()
-        || (signedIn() && request.resource.data.patientId == uid());
-      allow update, delete: if isStaff()
-        || (resource.data.patientId == uid()
-            && request.resource.data.patientId == resource.data.patientId);
+      allow create: if isStaff() || createsAsPatient();
+      allow update: if isStaff()
+        || (isPatientOwner() && request.resource.data.patientId == resource.data.patientId);
+      allow delete: if isStaff() || isPatientOwner();
     }
 
-    // ----- medicalResults -----
     match /medicalResults/{id} {
       allow read: if isStaff()
         || resource.data.patientId == uid()
         || caregiverCanSeeResults(resource.data.patientId);
-      allow write: if isStaff();
+      allow create: if isStaff() || createsAsPatient();
+      allow update: if isStaff()
+        || (isPatientOwner() && request.resource.data.patientId == resource.data.patientId);
+      allow delete: if isStaff() || isPatientOwner();
     }
 
-    // ----- medications / treatmentCycles -----
     match /medications/{id} {
       allow read: if isStaff()
         || resource.data.patientId == uid()
         || isCaregiverOf(resource.data.patientId);
-      allow write: if isStaff();
+      allow create: if isStaff() || createsAsPatient();
+      allow update: if isStaff()
+        || (isPatientOwner() && request.resource.data.patientId == resource.data.patientId);
+      allow delete: if isStaff() || isPatientOwner();
     }
 
     match /treatmentCycles/{id} {
       allow read: if isStaff()
         || resource.data.patientId == uid()
         || isCaregiverOf(resource.data.patientId);
-      allow write: if isStaff();
+      allow create: if isStaff() || createsAsPatient();
+      allow update: if isStaff()
+        || (isPatientOwner() && request.resource.data.patientId == resource.data.patientId);
+      allow delete: if isStaff() || isPatientOwner();
     }
 
-    // ----- conversations / messages -----
     match /conversations/{conversationId} {
       allow read: if isStaff()
         || resource.data.patientId == uid()
-        || uid() in resource.data.participantIds;
-      allow create: if signedIn()
-        && (isStaff() || request.resource.data.patientId == uid());
+        || (resource.data.participantIds is list && uid() in resource.data.participantIds);
+      allow create: if isStaff() || createsAsPatient();
       allow update: if isStaff()
-        || resource.data.patientId == uid();
+        || (isPatientOwner() && request.resource.data.patientId == resource.data.patientId);
+      allow delete: if isStaff() || isPatientOwner();
 
       match /messages/{messageId} {
         allow read: if isStaff()
           || get(/databases/$(database)/documents/conversations/$(conversationId)).data.patientId == uid()
-          || uid() in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participantIds;
+          || (get(/databases/$(database)/documents/conversations/$(conversationId)).data.participantIds is list
+              && uid() in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participantIds);
         allow create: if signedIn()
-          && request.resource.data.senderId == uid();
-        allow update: if signedIn()
-          && (resource.data.senderId == uid() || isStaff());
+          && request.resource.data.senderId == uid()
+          && (
+            isStaff()
+            || get(/databases/$(database)/documents/conversations/$(conversationId)).data.patientId == uid()
+          );
+        allow update, delete: if isStaff()
+          || resource.data.senderId == uid()
+          || get(/databases/$(database)/documents/conversations/$(conversationId)).data.patientId == uid();
       }
     }
 
-    // ----- notifications -----
     match /notifications/{id} {
       allow read: if isStaff() || resource.data.userId == uid();
-      allow create: if isStaff() || (signedIn() && request.resource.data.userId == uid());
-      allow update: if resource.data.userId == uid() || isStaff();
+      allow create: if isStaff()
+        || (signedIn() && request.resource.data.userId == uid());
+      allow update: if isStaff() || resource.data.userId == uid();
+      allow delete: if isStaff() || resource.data.userId == uid();
     }
 
-    // ----- documents -----
     match /documents/{id} {
       allow read: if isStaff()
         || resource.data.patientId == uid()
         || caregiverCanSeeResults(resource.data.patientId);
-      allow create: if isStaff()
-        || (signedIn() && request.resource.data.patientId == uid());
-      allow update, delete: if isStaff()
-        || (resource.data.patientId == uid()
-            && request.resource.data.patientId == resource.data.patientId);
+      allow create: if isStaff() || createsAsPatient();
+      allow update: if isStaff()
+        || (isPatientOwner() && request.resource.data.patientId == resource.data.patientId);
+      allow delete: if isStaff() || isPatientOwner();
     }
 
-    // ----- payments (client must not mark as paid) -----
     match /payments/{id} {
       allow read: if isStaff() || resource.data.patientId == uid();
       allow create: if signedIn()
@@ -172,14 +168,12 @@ service cloud.firestore {
       allow update: if isStaff()
         || (
           resource.data.patientId == uid()
-          && request.resource.data.status in ['pending', 'awaiting_review', 'cancelled']
-          && request.resource.data.status != 'paid'
           && request.resource.data.patientId == resource.data.patientId
+          && request.resource.data.status in ['pending', 'awaiting_review', 'cancelled']
         );
+      allow delete: if isStaff() || isAdmin();
     }
 
-    // ----- caregiverLinks -----
-    // Prefer document id = patientId_caregiverId for rules lookups
     match /caregiverLinks/{linkId} {
       allow read: if isStaff()
         || resource.data.patientId == uid()
@@ -193,19 +187,16 @@ service cloud.firestore {
       allow delete: if isAdmin() || resource.data.patientId == uid();
     }
 
-    // ----- education -----
     match /educationArticles/{id} {
       allow read: if resource.data.isPublished == true || isStaff();
       allow write: if isAdmin();
     }
 
-    // ----- settings -----
     match /settings/{docId} {
       allow read: if signedIn();
       allow write: if isAdmin();
     }
 
-    // ----- aiEvents / auditLog -----
     match /aiEvents/{id} {
       allow read, write: if isAdmin();
     }
