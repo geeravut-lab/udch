@@ -3,6 +3,7 @@ import { Home, CalendarDays, FileHeart, MessageCircle, User } from "lucide-react
 import { useI18n } from "../i18n/context";
 import { useAuth } from "../hooks/useAuth";
 import { useNotifications } from "../hooks/useNotifications";
+import { useMedReminders } from "../hooks/useMedReminders";
 
 const nav = [
   { to: "/", key: "navHome" as const, icon: Home, end: true },
@@ -16,6 +17,7 @@ export function AppShell() {
   const { t } = useI18n();
   const { profile } = useAuth();
   const { unread } = useNotifications();
+  useMedReminders(true);
   const location = useLocation();
   const initial = (profile?.fullName || profile?.email || "?").trim().charAt(0).toUpperCase();
   const hideHeavyHeader = ["/medications", "/documents", "/notifications"].some((p) =>

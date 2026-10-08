@@ -1,12 +1,7 @@
 export type UserRole = "patient" | "caregiver" | "nurse" | "doctor" | "admin";
 
 export type AppointmentStatus =
-  | "scheduled"
-  | "checked_in"
-  | "in_progress"
-  | "completed"
-  | "cancelled"
-  | "no_show";
+  | "scheduled" | "checked_in" | "in_progress" | "completed" | "cancelled" | "no_show";
 
 export type Appointment = {
   id: string;
@@ -85,6 +80,93 @@ export type ChatMessage = {
   readAt?: Date | null;
 };
 
+export type JourneyStep = {
+  id: string;
+  sortOrder: number;
+  title: string;
+  description?: string;
+  status: "done" | "active" | "todo";
+  completedAt?: string;
+  meta?: Record<string, unknown>;
+};
+
+export type CancerJourney = {
+  id: string;
+  patientId: string;
+  diagnosis?: string;
+  stage?: string;
+  protocol?: string;
+  status: "active" | "completed" | "paused";
+  startedAt?: string;
+  steps: JourneyStep[];
+};
+
+export type TreatmentCycle = {
+  id: string;
+  patientId: string;
+  journeyId?: string;
+  treatmentType: "chemo" | "radiation" | "surgery" | "other";
+  protocol?: string;
+  cycleNumber?: number;
+  totalCycles?: number;
+  status: "done" | "active" | "todo";
+  scheduledAt?: Date | null;
+  completedAt?: Date | null;
+  notes?: string;
+};
+
+export type CaregiverLink = {
+  id: string;
+  patientId: string;
+  caregiverId: string;
+  caregiverEmail?: string;
+  permission: "appointments_only" | "appointments_and_results" | "full";
+  status: "pending" | "active" | "revoked";
+  invitedAt?: Date | null;
+  acceptedAt?: Date | null;
+};
+
+export type Referral = {
+  id: string;
+  patientId: string;
+  fromHospital?: string;
+  toHospital?: string;
+  status: "pending" | "accepted" | "completed" | "cancelled";
+  reason?: string;
+  referredAt?: string;
+  notes?: string;
+};
+
+export type EducationArticle = {
+  id: string;
+  slug: string;
+  titleTh: string;
+  titleEn?: string;
+  bodyTh?: string;
+  bodyEn?: string;
+  category?: string;
+  cancerTypes?: string[];
+  isPublished: boolean;
+  sortOrder: number;
+};
+
+export type QueueTicket = {
+  ticketId: string;
+  patientId: string;
+  appointmentId?: string;
+  queueNumber: number;
+  status: "waiting" | "called" | "serving" | "done" | "skipped";
+  estimatedWaitMinutes?: number;
+  displayName?: string;
+  updatedAt?: number;
+};
+
+export type QueueMeta = {
+  nowServing: number;
+  totalWaiting: number;
+  updatedAt?: number;
+};
+
 export type FeatureFlags = {
   epro: boolean;
   telemedicine: boolean;
@@ -114,4 +196,5 @@ export type HospitalInfo = {
   mobile?: string;
   lineId?: string;
   hours?: string;
+  promptpayId?: string;
 };

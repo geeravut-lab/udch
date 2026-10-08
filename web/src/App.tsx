@@ -13,6 +13,17 @@ import { MePage } from "./pages/MePage";
 import { MedicationsPage } from "./pages/MedicationsPage";
 import { DocumentsPage } from "./pages/DocumentsPage";
 import { NotificationsPage } from "./pages/NotificationsPage";
+import { JourneyPage } from "./pages/JourneyPage";
+import { CaregiversPage } from "./pages/CaregiversPage";
+import { ReferralsPage } from "./pages/ReferralsPage";
+import { EducationPage } from "./pages/EducationPage";
+import { QueuePage } from "./pages/QueuePage";
+import { PaymentsPage } from "./pages/PaymentsPage";
+import { EproPage } from "./pages/EproPage";
+import { NursePage } from "./pages/NursePage";
+import { TelemedPage } from "./pages/TelemedPage";
+import { FastTrackPage } from "./pages/FastTrackPage";
+import { QueueStaffPage } from "./pages/QueueStaffPage";
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -36,6 +47,17 @@ function AppRoutes() {
         <Route path="/medications" element={<MedicationsPage />} />
         <Route path="/documents" element={<DocumentsPage />} />
         <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/journey" element={<JourneyPage />} />
+        <Route path="/caregivers" element={<CaregiversPage />} />
+        <Route path="/referrals" element={<ReferralsPage />} />
+        <Route path="/education" element={<EducationPage />} />
+        <Route path="/queue" element={<QueuePage />} />
+        <Route path="/payments" element={<PaymentsPage />} />
+        <Route path="/epro" element={<EproPage />} />
+        <Route path="/nurse" element={<NursePage />} />
+        <Route path="/telemed" element={<TelemedPage />} />
+        <Route path="/fast-track" element={<FastTrackPage />} />
+        <Route path="/queue-staff" element={<QueueStaffPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

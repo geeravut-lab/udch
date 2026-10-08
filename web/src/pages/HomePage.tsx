@@ -3,23 +3,28 @@ import { useI18n } from "../i18n/context";
 import { useAppointments } from "../hooks/useAppointments";
 import { useNotifications } from "../hooks/useNotifications";
 import { useHospitalInfo } from "../hooks/useHospitalInfo";
+import { useJourney } from "../hooks/useJourney";
+import { useQueue } from "../hooks/useQueue";
 import { dayMonthParts, formatThaiDate } from "../lib/converters";
-
-const JOURNEY = [
-  { n: 1, label: "วินิจฉัย", status: "done" as const },
-  { n: 2, label: "วางแผน", status: "done" as const },
-  { n: 3, label: "เคมีบำบัด", status: "active" as const },
-  { n: 4, label: "ประเมินผล", status: "todo" as const },
-  { n: 5, label: "ติดตาม", status: "todo" as const },
-];
 
 export function HomePage() {
   const { t } = useI18n();
   const { appointments, loading } = useAppointments({ upcomingOnly: true, max: 8 });
   const { unread } = useNotifications();
   const hospital = useHospitalInfo();
+  const { journey } = useJourney();
+  const { waitInfo } = useQueue("opd");
   const next = appointments[0];
   const rest = appointments.slice(1, 3);
+  const steps = journey?.steps?.length
+    ? journey.steps
+    : [
+        { id: "1", sortOrder: 1, title: "วินิจฉัย", status: "done" as const },
+        { id: "2", sortOrder: 2, title: "วางแผน", status: "done" as const },
+        { id: "3", sortOrder: 3, title: "เคมีบำบัด", status: "active" as const },
+        { id: "4", sortOrder: 4, title: "ประเมินผล", status: "todo" as const },
+        { id: "5", sortOrder: 5, title: "ติดตาม", status: "todo" as const },
+      ];
 
   return (
     <div className="page">
@@ -36,7 +41,7 @@ export function HomePage() {
           </div>
           <div className="actions">
             <Link to="/appointments" className="btn">{t.viewAllAppt}</Link>
-            <a className="btn ghost-light" href={`tel:${hospital.phone}`}>{t.callHospital}</a>
+            <Link to="/queue" className="btn ghost-light">{t.queueTitle}</Link>
           </div>
         </div>
       ) : (
@@ -49,12 +54,35 @@ export function HomePage() {
         </div>
       )}
 
+      {waitInfo && (
+        <div className="card" style={{ background: "linear-gradient(135deg,#D9F7F0,#DCEEFF)" }}>
+          <h3>🎫 {t.queueTitle}</h3>
+          <div className="pf" style={{ fontSize: "1.15rem" }}>
+            {t.queueNumber} {waitInfo.myNumber}
+            {waitInfo.ahead > 0
+              ? ` · ${t.queueAhead.replace("{n}", String(waitInfo.ahead))}`
+              : ` · ${t.queueYourTurn}`}
+          </div>
+          <Link to="/queue" className="btn sm secondary" style={{ marginTop: 10, width: "auto" }}>{t.viewQueue}</Link>
+        </div>
+      )}
+
       <div className="card">
-        <h3>🛤️ {t.dashJourney}</h3>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h3>🛤️ {t.dashJourney}</h3>
+          <Link to="/journey" className="btn sm secondary" style={{ width: "auto" }}>{t.viewAll}</Link>
+        </div>
+        {journey?.diagnosis && (
+          <p className="muted" style={{ fontSize: "0.9rem", marginBottom: 8 }}>
+            {journey.diagnosis}
+            {journey.protocol ? ` · ${journey.protocol}` : ""}
+          </p>
+        )}
         <div className="journey">
-          {JOURNEY.map((s) => (
-            <div key={s.n} className={`st ${s.status}`}>
-              <i>{s.n}</i>{s.label}
+          {steps.map((s, i) => (
+            <div key={s.id || i} className={`st ${s.status}`}>
+              <i>{i + 1}</i>
+              {s.title}
             </div>
           ))}
         </div>
@@ -86,13 +114,23 @@ export function HomePage() {
         <Link to="/medications" className="tile" style={{ ["--c" as string]: "var(--coral)" }}>
           <span>💊</span>{t.dashMeds}<small>{t.medsTitle}</small>
         </Link>
-        <Link to="/messages" className="tile" style={{ ["--c" as string]: "var(--lilac)" }}>
-          <span>💬</span>{t.navMessages}
-          <small>{unread > 0 ? t.unreadCount.replace("{n}", String(unread)) : t.messagesTitle}</small>
+        <Link to="/education" className="tile" style={{ ["--c" as string]: "var(--sun)" }}>
+          <span>📚</span>{t.eduTitle}<small>{t.eduShort}</small>
         </Link>
-        <Link to="/notifications" className="tile" style={{ ["--c" as string]: "var(--sky)" }}>
-          <span>🔔</span>{t.notifTitle}
-          <small>{unread > 0 ? t.unreadCount.replace("{n}", String(unread)) : "—"}</small>
+        <Link to="/caregivers" className="tile" style={{ ["--c" as string]: "var(--lilac)" }}>
+          <span>👨‍👩‍👧</span>{t.caregiverTitle}<small>{t.caregiverShort}</small>
+        </Link>
+        <Link to="/referrals" className="tile" style={{ ["--c" as string]: "var(--sky)" }}>
+          <span>🏥</span>{t.referralTitle}<small>{t.referralShort}</small>
+        </Link>
+        <Link to="/payments" className="tile" style={{ ["--c" as string]: "var(--teal)" }}>
+          <span>💳</span>{t.payTitle}<small>PromptPay</small>
+        </Link>
+        <Link to="/epro" className="tile" style={{ ["--c" as string]: "var(--coral)" }}>
+          <span>📝</span>{t.eproTitle}<small>{t.eproShort}</small>
+        </Link>
+        <Link to="/telemed" className="tile" style={{ ["--c" as string]: "var(--sky)" }}>
+          <span>📹</span>{t.teleTitle}<small>{t.teleShort}</small>
         </Link>
       </div>
 
@@ -102,10 +140,7 @@ export function HomePage() {
           {hospital.hours}<br />
           {hospital.phone}{hospital.mobile ? ` · ${hospital.mobile}` : ""}
         </p>
-        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-          <a className="btn sm" href={`tel:${hospital.phone}`} style={{ flex: 1 }}>📞 {t.callHospital}</a>
-          <Link to="/documents" className="btn sm secondary" style={{ flex: 1 }}>📄 {t.docsTitle}</Link>
-        </div>
+        <a className="btn sm" href={`tel:${hospital.phone}`} style={{ marginTop: 10, width: "auto" }}>📞 {t.callHospital}</a>
       </div>
 
       <a className="sos" href={`tel:${hospital.phone}`}>🆘 {t.dashSos}</a>

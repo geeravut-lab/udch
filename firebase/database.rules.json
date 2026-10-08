@@ -1,45 +1,27 @@
 {
   "rules": {
-    ".read": false,
-    ".write": false,
-
     "queue": {
       "$date": {
         "$servicePoint": {
           ".read": "auth != null",
           "$ticketId": {
-            ".read": "auth != null && (data.child('patientId').val() === auth.uid || root.child('presence').child(auth.uid).child('role').val() === 'nurse' || root.child('presence').child(auth.uid).child('role').val() === 'doctor' || root.child('presence').child(auth.uid).child('role').val() === 'admin')",
-            ".write": "auth != null && (auth.token.role === 'nurse' || auth.token.role === 'doctor' || auth.token.role === 'admin' || (data.exists() === false && newData.child('patientId').val() === auth.uid) || (data.child('patientId').val() === auth.uid && newData.child('patientId').val() === auth.uid))",
-            ".validate": "newData.hasChildren(['patientId', 'status', 'updatedAt'])"
+            ".write": "auth != null && (!data.exists() || data.child('patientId').val() === auth.uid || root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'nurse')"
           }
         }
       }
     },
-
     "queueMeta": {
       "$date": {
         "$servicePoint": {
           ".read": "auth != null",
-          ".write": "auth != null && (auth.token.role === 'nurse' || auth.token.role === 'doctor' || auth.token.role === 'admin')",
-          ".validate": "newData.hasChildren(['updatedAt'])"
+          ".write": "auth != null"
         }
       }
     },
-
     "presence": {
       "$uid": {
         ".read": "auth != null",
-        ".write": "auth != null && auth.uid === $uid",
-        ".validate": "newData.hasChildren(['state', 'lastChanged'])"
-      }
-    },
-
-    "chatTyping": {
-      "$conversationId": {
-        "$uid": {
-          ".read": "auth != null",
-          ".write": "auth != null && auth.uid === $uid"
-        }
+        ".write": "auth != null && auth.uid === $uid"
       }
     }
   }

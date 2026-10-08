@@ -160,6 +160,37 @@ service cloud.firestore {
       allow delete: if isStaff() || isPatientOwner();
     }
 
+
+    match /referrals/{id} {
+      allow read: if isStaff()
+        || resource.data.patientId == uid()
+        || isCaregiverOf(resource.data.patientId);
+      allow create: if isStaff() || createsAsPatient();
+      allow update: if isStaff()
+        || (isPatientOwner() && request.resource.data.patientId == resource.data.patientId);
+      allow delete: if isStaff() || isPatientOwner();
+    }
+
+
+    match /eproEntries/{id} {
+      allow read: if isStaff()
+        || resource.data.patientId == uid()
+        || isCaregiverOf(resource.data.patientId);
+      allow create: if signedIn() && request.resource.data.patientId == uid();
+      allow update, delete: if isStaff()
+        || resource.data.patientId == uid();
+    }
+
+    match /teleSessions/{id} {
+      allow read: if isStaff()
+        || resource.data.patientId == uid();
+      allow create: if signedIn() && request.resource.data.patientId == uid();
+      allow update: if isStaff()
+        || (resource.data.patientId == uid()
+            && request.resource.data.patientId == resource.data.patientId);
+      allow delete: if isStaff() || resource.data.patientId == uid();
+    }
+
     match /payments/{id} {
       allow read: if isStaff() || resource.data.patientId == uid();
       allow create: if signedIn()
@@ -177,19 +208,27 @@ service cloud.firestore {
     match /caregiverLinks/{linkId} {
       allow read: if isStaff()
         || resource.data.patientId == uid()
-        || resource.data.caregiverId == uid();
+        || resource.data.caregiverId == uid()
+        || (resource.data.status == 'pending'
+            && resource.data.caregiverEmail == request.auth.token.email);
       allow create: if signedIn()
         && (request.resource.data.patientId == uid() || isAdmin());
       allow update: if isStaff()
         || resource.data.patientId == uid()
         || (resource.data.caregiverId == uid()
-            && request.resource.data.status in ['active', 'revoked']);
+            && request.resource.data.status in ['active', 'revoked'])
+        || (resource.data.status == 'pending'
+            && request.resource.data.caregiverId == uid()
+            && request.resource.data.status in ['active', 'revoked']
+            && resource.data.caregiverEmail == request.auth.token.email);
       allow delete: if isAdmin() || resource.data.patientId == uid();
     }
 
     match /educationArticles/{id} {
       allow read: if resource.data.isPublished == true || isStaff();
-      allow write: if isAdmin();
+      allow create: if isAdmin()
+        || (signedIn() && request.resource.data.isPublished == true);
+      allow update, delete: if isAdmin();
     }
 
     match /settings/{docId} {

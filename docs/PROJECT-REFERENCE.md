@@ -296,3 +296,76 @@ udch/
 - Scaffold ใช้ Firebase JS SDK แทน `@supabase/supabase-js`
 - Knowledge 01–13 ยังใช้แนวคิดได้ ต้องแปล data access layer
 - รอเจ้าของโครงการสร้าง Firebase project แล้วส่ง web config + RTDB URL
+
+---
+
+## สถานะล่าสุด (อัปเดตอัตโนมัติ)
+
+**อัปเดตเมื่อ:** 2026-10-09 04:00 +0700
+
+### Stack
+- Frontend: Vite + React + TypeScript + React Router
+- Backend: Firebase Auth + Firestore + Realtime Database + Storage
+- Deploy: Netlify (`web/`), Preview only จนกว่าจะอนุญาต production
+- Repo: https://github.com/geeravut-lab/udch
+- Firebase project: `udch-911cb`
+
+### Phase 0 — Foundation ✅
+- AppShell, theme, i18n TH/EN, Auth Email+Google, feature flags hook
+
+### Phase 1 — Patient Portal ✅ (ปิดงานค้างแล้ว)
+| โมดูล | สถานะ |
+|--------|--------|
+| Dashboard / นัดถัดไป | ✅ |
+| นัดหมาย / ผลตรวจ | ✅ |
+| ยา + **reminder เบราว์เซอร์ + in-app** | ✅ |
+| เอกสาร + **อัปโหลด/ดาวน์โหลด Storage** | ✅ |
+| ข้อความ / แจ้งเตือน | ✅ |
+| PDPA export JSON | ✅ |
+| **PDPA ลบบัญชี** | ✅ |
+| Demo seed | ✅ |
+
+### Phase 2 — Cancer Journey ✅ (ปิดงานค้างแล้ว)
+| โมดูล | สถานะ |
+|--------|--------|
+| Journey + treatment cycles | ✅ |
+| Caregiver เชิญ / เพิกถอน | ✅ |
+| **Caregiver รับคำเชิญ (อีเมล → accept)** | ✅ |
+| Referral / Education / PromptPay | ✅ |
+| คิวผู้ป่วย (RTDB) | ✅ |
+| **คิว staff + ตัวอย่าง ticket** | ✅ |
+| LINE OA จริง | ⏳ ยังไม่เชื่อม OA (โครง notification พร้อม) |
+
+### Phase 3 — Advanced Care ✅ (เวอร์ชันแรก)
+| โมดูล | สถานะ |
+|--------|--------|
+| ePRO รายงานอาการ | ✅ |
+| Nurse triage (severity high) | ✅ (ต้อง role staff) |
+| Fast-track แล็บ | ✅ |
+| Telemedicine คำขอพบแพทย์ | ✅ (ลิงก์ใส่โดย staff ภายหลัง) |
+
+### Routes หลัก
+```
+/ /appointments /results /messages /me
+/medications /documents /notifications
+/journey /caregivers /referrals /education /queue /payments
+/epro /telemed /fast-track /queue-staff /nurse
+```
+
+### กฎการทำงาน
+1. ทดสอบบน test/local/preview เท่านั้น — **ห้าม production deploy** โดยไม่ขออนุญาต
+2. `firebase.json` ต้องชี้ `firebase/firestore.rules` (ไม่ใช่ไฟล์ที่ root)
+3. Demo seed ลบข้อมูลเก่าของผู้ใช้ก่อนใส่ชุดใหม่
+
+### สิ่งที่ยังนอกขอบเขต / รอรอบถัดไป
+- LINE Messaging API เชื่อม OA จริง
+- Custom claims ตั้ง role staff ผ่าน Admin SDK / Cloud Function
+- Caregiver dashboard ดูรายการนัด/ผลของผู้ป่วยแบบเต็มหน้า
+- Payment webhook ยืนยันโอนอัตโนมัติ
+- AI Assistant + Admin model dropdown (Phase 4)
+- HIS / รพ. integration
+
+### ไฟล์ rules ที่ต้อง deploy
+```
+firebase deploy --only firestore:rules,database,storage
+```
