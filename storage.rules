@@ -1,0 +1,48 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isStaff() {
+      return signedIn()
+        && request.auth.token.role in ['nurse', 'doctor', 'admin'];
+    }
+
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    // avatars/{uid}/...
+    match /avatars/{userId}/{fileName} {
+      allow read: if signedIn();
+      allow write: if isOwner(userId)
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // results/{patientId}/{resultId}/...
+    match /results/{patientId}/{allPaths=**} {
+      allow read: if isOwner(patientId) || isStaff();
+      allow write: if isStaff()
+        && request.resource.size < 20 * 1024 * 1024;
+    }
+
+    // documents/{patientId}/{documentId}/...
+    match /documents/{patientId}/{allPaths=**} {
+      allow read: if isOwner(patientId) || isStaff();
+      allow write: if isStaff()
+        && request.resource.size < 20 * 1024 * 1024;
+    }
+
+    // payment-slips/{patientId}/{paymentId}/...
+    match /payment-slips/{patientId}/{allPaths=**} {
+      allow read: if isOwner(patientId) || isStaff();
+      allow write: if isOwner(patientId) || isStaff()
+        && request.resource.size < 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*|application/pdf');
+    }
+  }
+}
