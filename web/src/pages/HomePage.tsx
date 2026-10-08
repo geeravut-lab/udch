@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useI18n } from "../i18n/context";
 import { useAppointments } from "../hooks/useAppointments";
-import { useNotifications } from "../hooks/useNotifications";
 import { useHospitalInfo } from "../hooks/useHospitalInfo";
 import { useJourney } from "../hooks/useJourney";
 import { useQueue } from "../hooks/useQueue";
@@ -10,7 +9,6 @@ import { dayMonthParts, formatThaiDate } from "../lib/converters";
 export function HomePage() {
   const { t } = useI18n();
   const { appointments, loading } = useAppointments({ upcomingOnly: true, max: 8 });
-  const { unread } = useNotifications();
   const hospital = useHospitalInfo();
   const { journey } = useJourney();
   const { waitInfo } = useQueue("opd");

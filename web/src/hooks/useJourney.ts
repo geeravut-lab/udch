@@ -5,7 +5,6 @@ import {
   where,
   onSnapshot,
   limit,
-  orderBy,
 } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import type { CancerJourney, JourneyStep } from "../types/models";
