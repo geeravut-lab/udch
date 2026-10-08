@@ -1,7 +1,7 @@
 # UDCH Digital Cancer Care Platform — Project Reference
 
 > เอกสารอ้างอิงหลักสำหรับสร้างระบบ UDCH จนเสร็จสมบูรณ์  
-> อัปเดตล่าสุด: 2026-10-08  
+> อัปเดตล่าสุด: 2026-10-09  
 > เก็บไว้ใน repo ที่ `docs/PROJECT-REFERENCE.md` เมื่อเริ่มพัฒนา
 
 ---
@@ -46,11 +46,13 @@
 |------|-----------|----------|
 | Framework | **TanStack Start** (React 19 + Vite) | ตาม knowledge base (createServerFn, middleware) |
 | UI | **Tailwind CSS v4** + **shadcn/ui** | Theme จาก Mock-up (Teal primary) |
-| Auth / DB / Storage | **Supabase** (Postgres + RLS + Storage + Auth) | client ผู้ใช้ (RLS) + supabaseAdmin (service-role) |
+| Auth | **Firebase Authentication** | Email ก่อน; Custom Claims สำหรับ role |
+| Database | **Cloud Firestore** + **Realtime Database** | Firestore = ข้อมูลหลัก; RTDB = คิวสด / presence / typing |
+| Storage | **Firebase Cloud Storage** | ผลตรวจ, เอกสาร, สลิป, avatar |
 | Deploy | **Netlify** | Production URL: `https://udch.netlify.app/` |
 | Source | **GitHub** `https://github.com/geeravut-lab/udch` | branch หลัก `main` |
 | AI | Vercel AI SDK หลาย provider (Anthropic / OpenAI / Google) | ตาม `11-ai-provider-settings.md` |
-| แจ้งเตือน | LINE Messaging API + Web Push / in-app | ตาม `07-line-notifications.md` |
+| แจ้งเตือน | LINE Messaging API + Web Push / in-app | ตาม `07-line-notifications.md` (LINE เริ่ม Phase 2) |
 | ชำระเงิน | PromptPay QR (ไม่มี gateway ใน phase แรก) | ตาม `03-promptpay-qr.md` |
 
 ### Production URL
@@ -240,7 +242,8 @@ udch/
 ## 12. Checklist ก่อนเริ่มเขียนโค้ด (รอการอนุมัติ)
 
 - [ ] เจ้าของโครงการอนุมัติแผน Phase 0 → 1 นี้
-- [ ] มี Supabase project (URL + anon key + service role สำหรับ local เท่านั้น)
+- [x] ตัดสินใจใช้ Firebase (Auth + Firestore + RTDB + Storage) แทน Supabase
+- [ ] มี Firebase project (web config + databaseURL + service account สำหรับ server)
 - [ ] มี Netlify site ผูก repo (deploy preview เปิด, production deploy ล็อกไว้ก่อน)
 - [ ] มี LINE OA / Messaging API (ถ้าจะทำแจ้งเตือนใน Phase 1)
 - [ ] ยืนยันว่า mock data พอสำหรับ demo ผู้บริหาร โดยยังไม่ต้องต่อ HIS
@@ -274,3 +277,22 @@ udch/
 ### ไฟล์ schema ที่เกี่ยวข้อง
 - `supabase/migrations/20261008000000_phase0_foundation.sql`
 - `docs/schema/SUPABASE-SCHEMA-PHASE0-1.md` (คู่มือสร้าง project + อธิบายตาราง)
+
+---
+
+## 15. การตัดสินใจเปลี่ยน Data Stack (2026-10-09)
+
+| ข้อ | การตัดสินใจ |
+|-----|-------------|
+| Backend data | **เปลี่ยนจาก Supabase → Firebase** |
+| บริการที่ใช้ | Authentication + **Cloud Firestore** + **Realtime Database** + Cloud Storage |
+| RTDB ใช้ทำอะไร | คิวสด (`/queue`, `/queueMeta`), presence, chat typing |
+| Firestore ใช้ทำอะไร | โปรไฟล์, นัด, ผลตรวจ, ยา, journey, ข้อความ, เอกสาร, ตั้งค่า, AI settings |
+| Schema เอกสาร | `docs/schema/FIREBASE-DATA-MODEL-PHASE0-1.md` |
+| Security Rules | `firebase/firestore.rules`, `firebase/database.rules.json`, `firebase/storage.rules` |
+| ของเก่า Supabase | เก็บใน `docs/archive/` เป็นประวัติ — ไม่ใช้ runtime |
+
+### ผลกระทบต่อ Phase 0
+- Scaffold ใช้ Firebase JS SDK แทน `@supabase/supabase-js`
+- Knowledge 01–13 ยังใช้แนวคิดได้ ต้องแปล data access layer
+- รอเจ้าของโครงการสร้าง Firebase project แล้วส่ง web config + RTDB URL
