@@ -132,6 +132,9 @@ export function HomePage() {
         <Link to="/telemed" className="tile" style={{ ["--c" as string]: "var(--sky)" }}>
           <span>📹</span>{t.teleTitle}<small>{t.teleShort}</small>
         </Link>
+        <Link to="/ai" className="tile" style={{ ["--c" as string]: "var(--lilac)" }}>
+          <span>🤖</span>{t.aiTitle}<small>{t.aiShort}</small>
+        </Link>
       </div>
 
       <div className="card" style={{ marginTop: 12 }}>

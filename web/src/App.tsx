@@ -24,6 +24,8 @@ import { NursePage } from "./pages/NursePage";
 import { TelemedPage } from "./pages/TelemedPage";
 import { FastTrackPage } from "./pages/FastTrackPage";
 import { QueueStaffPage } from "./pages/QueueStaffPage";
+import { AdminAiPage } from "./pages/AdminAiPage";
+import { AiAssistantPage } from "./pages/AiAssistantPage";
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -58,6 +60,8 @@ function AppRoutes() {
         <Route path="/telemed" element={<TelemedPage />} />
         <Route path="/fast-track" element={<FastTrackPage />} />
         <Route path="/queue-staff" element={<QueueStaffPage />} />
+        <Route path="/admin/ai" element={<AdminAiPage />} />
+        <Route path="/ai" element={<AiAssistantPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

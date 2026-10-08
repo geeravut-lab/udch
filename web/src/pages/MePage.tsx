@@ -101,6 +101,8 @@ export function MePage() {
           <Link to="/fast-track" className="btn secondary">{t.fastTitle}</Link>
           <Link to="/queue-staff" className="btn secondary">{t.queueStaffTitle}</Link>
           <Link to="/nurse" className="btn secondary">{t.nurseTitle}</Link>
+          <Link to="/ai" className="btn secondary">{t.aiTitle}</Link>
+          <Link to="/admin/ai" className="btn secondary">{t.aiAdminTitle}</Link>
           <Link to="/notifications" className="btn secondary">{t.notifTitle}</Link>
         </div>
       </div>

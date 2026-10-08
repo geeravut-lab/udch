@@ -299,73 +299,41 @@ udch/
 
 ---
 
-## สถานะล่าสุด (อัปเดตอัตโนมัติ)
+---
 
-**อัปเดตเมื่อ:** 2026-10-09 04:00 +0700
+## สถานะล่าสุด (Phase 0–4)
 
-### Stack
-- Frontend: Vite + React + TypeScript + React Router
-- Backend: Firebase Auth + Firestore + Realtime Database + Storage
-- Deploy: Netlify (`web/`), Preview only จนกว่าจะอนุญาต production
-- Repo: https://github.com/geeravut-lab/udch
-- Firebase project: `udch-911cb`
+**อัปเดตเมื่อ:** 2026-10-09 04:21 +0700
 
-### Phase 0 — Foundation ✅
-- AppShell, theme, i18n TH/EN, Auth Email+Google, feature flags hook
+### ครบแล้ว
+- Phase 0 Foundation ✅
+- Phase 1 Patient Portal ✅ (รวม PDPA ลบ, เอกสาร Storage, med reminder)
+- Phase 2 Journey ✅ (รวม caregiver accept, queue staff/demo)
+- Phase 3 Advanced ✅ (ePRO สีตามค่า, nurse triage, fast-track, telemed)
+- Phase 4 AI ✅ (ผู้ช่วยผู้ป่วย + หน้า admin เลือก provider/model ตามงาน)
 
-### Phase 1 — Patient Portal ✅ (ปิดงานค้างแล้ว)
-| โมดูล | สถานะ |
-|--------|--------|
-| Dashboard / นัดถัดไป | ✅ |
-| นัดหมาย / ผลตรวจ | ✅ |
-| ยา + **reminder เบราว์เซอร์ + in-app** | ✅ |
-| เอกสาร + **อัปโหลด/ดาวน์โหลด Storage** | ✅ |
-| ข้อความ / แจ้งเตือน | ✅ |
-| PDPA export JSON | ✅ |
-| **PDPA ลบบัญชี** | ✅ |
-| Demo seed | ✅ |
+### ยังไม่ทำ (ก่อน production ตามที่ขอ)
+- LINE OA แจ้งเตือนจริง
+- Manual URL คู่มือ (08)
+- Custom claims ตั้ง role อัตโนมัติ
+- Edge Function เรียก LLM จริง (โครง edgeFunctionUrl พร้อม)
+- HIS integration
 
-### Phase 2 — Cancer Journey ✅ (ปิดงานค้างแล้ว)
-| โมดูล | สถานะ |
-|--------|--------|
-| Journey + treatment cycles | ✅ |
-| Caregiver เชิญ / เพิกถอน | ✅ |
-| **Caregiver รับคำเชิญ (อีเมล → accept)** | ✅ |
-| Referral / Education / PromptPay | ✅ |
-| คิวผู้ป่วย (RTDB) | ✅ |
-| **คิว staff + ตัวอย่าง ticket** | ✅ |
-| LINE OA จริง | ⏳ ยังไม่เชื่อม OA (โครง notification พร้อม) |
+### ePRO สีแถบ
+| ค่า | สี | ความหมาย |
+|-----|-----|----------|
+| 0–3 | เขียว | ดี |
+| 4–6 | ฟ้า | เฝ้าระวัง |
+| 7–10 | ส้ม | ต้องติดตาม |
 
-### Phase 3 — Advanced Care ✅ (เวอร์ชันแรก)
-| โมดูล | สถานะ |
-|--------|--------|
-| ePRO รายงานอาการ | ✅ |
-| Nurse triage (severity high) | ✅ (ต้อง role staff) |
-| Fast-track แล็บ | ✅ |
-| Telemedicine คำขอพบแพทย์ | ✅ (ลิงก์ใส่โดย staff ภายหลัง) |
+### AI
+- หน้า `/ai` — ผู้ช่วย (local FAQ หรือ edge function)
+- หน้า `/admin/ai` — admin เลือก provider + model dropdown แยก chat/document/reasoning
+- เก็บที่ `settings/aiSettings`
 
-### Routes หลัก
-```
-/ /appointments /results /messages /me
-/medications /documents /notifications
-/journey /caregivers /referrals /education /queue /payments
-/epro /telemed /fast-track /queue-staff /nurse
-```
-
-### กฎการทำงาน
-1. ทดสอบบน test/local/preview เท่านั้น — **ห้าม production deploy** โดยไม่ขออนุญาต
-2. `firebase.json` ต้องชี้ `firebase/firestore.rules` (ไม่ใช่ไฟล์ที่ root)
-3. Demo seed ลบข้อมูลเก่าของผู้ใช้ก่อนใส่ชุดใหม่
-
-### สิ่งที่ยังนอกขอบเขต / รอรอบถัดไป
-- LINE Messaging API เชื่อม OA จริง
-- Custom claims ตั้ง role staff ผ่าน Admin SDK / Cloud Function
-- Caregiver dashboard ดูรายการนัด/ผลของผู้ป่วยแบบเต็มหน้า
-- Payment webhook ยืนยันโอนอัตโนมัติ
-- AI Assistant + Admin model dropdown (Phase 4)
-- HIS / รพ. integration
-
-### ไฟล์ rules ที่ต้อง deploy
-```
-firebase deploy --only firestore:rules,database,storage
-```
+### Netlify AI Function (2026-10-09 04:34 +0700)
+- Path: `web/netlify/functions/ai-chat.mjs`
+- Endpoint: `/.netlify/functions/ai-chat`
+- Env: `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GOOGLE_AI_API_KEY`
+- แอปเรียกอัตโนมัติ; ถ้าไม่มี key ถอยไปความรู้ท้องถิ่น
+- ดูรายละเอียด: `docs/NETLIFY-AI-FUNCTION.md`

@@ -1,11 +1,14 @@
 [build]
+  base = "web"
   command = "npm run build"
   publish = "dist"
 
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# SPA — /.netlify/functions/* ยังทำงานตามปกติของ Netlify
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[build.environment]
-  NODE_VERSION = "22"

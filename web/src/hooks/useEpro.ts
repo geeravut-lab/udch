@@ -79,15 +79,23 @@ export function useEpro(patientId?: string | null) {
     pain: number;
     nausea: number;
     fatigue: number;
+    sleep?: number;
+    mood?: number;
     notes?: string;
   }) {
     if (!user) throw new Error("not signed in");
-    const severity = severityOf(input.pain, input.nausea, input.fatigue);
+    const severity = severityOf(
+      input.pain,
+      input.nausea,
+      Math.max(input.fatigue, input.sleep ?? 0, input.mood ?? 0),
+    );
     await addDoc(collection(db, "eproEntries"), {
       patientId: user.uid,
       pain: input.pain,
       nausea: input.nausea,
       fatigue: input.fatigue,
+      sleep: input.sleep ?? null,
+      mood: input.mood ?? null,
       notes: input.notes || "",
       severity,
       createdAt: serverTimestamp(),
