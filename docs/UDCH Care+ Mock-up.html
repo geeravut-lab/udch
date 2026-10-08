@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UDCH Care+ | Mock-up</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EFF9FF;--card:#fff;--ink:#23324A;--mut:#60738C;--teal:#0FB5AE;--coral:#FF7A6B;--sun:#FFC93C;--lilac:#8B7BFF;--sky:#4CC3FF;--mint:#34D399;--line:#E3EEF6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0E1A2B;--card:#172840;--ink:#EAF2FB;--mut:#9FB3C8;--line:#243A57}}
+:root[data-theme=dark]{--bg:#0E1A2B;--card:#172840;--ink:#EAF2FB;--mut:#9FB3C8;--line:#243A57}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0}
+body{font:17px/1.55 Sarabun,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+h1,h2,h3,.pf{font-family:Prompt,Sarabun,sans-serif;font-weight:600}
+button{font:inherit;cursor:pointer;border:0;color:inherit;background:none}
+button:focus-visible,summary:focus-visible{outline:3px solid var(--lilac);outline-offset:2px}
+.stage{max-width:900px;margin:0 auto;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.switch{display:flex;gap:6px;background:var(--card);padding:5px;border-radius:30px;box-shadow:0 2px 10px #0001}
+.switch button{padding:8px 16px;border-radius:24px;font-weight:600;font-size:.9rem;color:var(--mut)}
+.switch .on{background:var(--ink);color:var(--bg)}
+.phone{width:100%;max-width:410px;height:min(840px,calc(100vh - 80px));min-height:620px;background:var(--bg);border-radius:34px;box-shadow:0 20px 60px #0E2B4A33,0 0 0 8px var(--ink);display:flex;flex-direction:column;overflow:hidden;position:relative}
+@media(max-width:480px){.stage{padding:0;gap:0}.switch{margin:8px}.phone{border-radius:0;box-shadow:none;height:calc(100vh - 56px)}}
+.top{padding:16px 18px 20px;background:linear-gradient(135deg,var(--teal),var(--sky) 70%,var(--lilac));color:#fff;border-radius:0 0 28px 28px}
+.top .row{display:flex;justify-content:space-between;align-items:center}
+.top h1{font-size:1.25rem}.top small{opacity:.92;font-size:.9rem}
+.av{width:42px;height:42px;border-radius:50%;background:#fff;color:var(--teal);display:grid;place-items:center;font-weight:600;font-family:Prompt}
+#app{flex:1;overflow-y:auto;padding:14px 14px 20px}
+.screen{display:none}.screen.on{display:block;animation:in .25s}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.card{background:var(--card);border-radius:22px;padding:16px;margin-bottom:14px;box-shadow:0 4px 16px #0E2B4A12}
+.h{font-size:1.05rem;margin:4px 2px 10px}
+.hero{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#FFE9A8,#FFD0C9);color:#3A2A1E}
+.ring{--p:50;width:84px;height:84px;border-radius:50%;flex:none;background:conic-gradient(var(--coral) calc(var(--p)*1%),#fff8 0);display:grid;place-items:center}
+.ring b{width:64px;height:64px;border-radius:50%;background:#fff;display:grid;place-items:center;font:600 1.15rem Prompt;color:#C4492F}
+.hero p{font-size:.88rem;opacity:.85}.hero h2{font-size:1.2rem;line-height:1.3}
+.steps{display:flex;justify-content:space-between;margin:14px 0 4px;position:relative}
+.steps:before{content:"";position:absolute;left:12%;right:12%;top:14px;height:4px;background:var(--line);border-radius:4px}
+.st{flex:1;text-align:center;font-size:.72rem;position:relative;color:var(--mut)}
+.st i{display:grid;place-items:center;width:30px;height:30px;margin:0 auto 4px;border-radius:50%;background:var(--line);font-style:normal;font-weight:600}
+.st.d i{background:var(--mint);color:#fff}.st.n i{background:var(--coral);color:#fff;box-shadow:0 0 0 5px #FF7A6B33}.st.n{color:var(--ink);font-weight:600}
+.act{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}.act:last-child{border:0}
+.dt{background:color-mix(in srgb,var(--sky) 22%,var(--card));color:#0B7FB8;border-radius:14px;padding:6px 0;width:58px;text-align:center;font:600 .85rem/1.2 Prompt;flex:none}
+.bar{height:14px;border-radius:9px;background:var(--line);overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--mint));border-radius:9px;transition:width .5s}
+.btn{padding:13px 18px;border-radius:16px;font-weight:600;background:var(--teal);color:#fff;width:100%;font-size:1rem}
+.btn.o{background:color-mix(in srgb,var(--teal) 14%,var(--card));color:var(--teal)}
+.btn.sm{width:auto;padding:9px 14px;font-size:.88rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.tile{--c:var(--teal);background:color-mix(in srgb,var(--c) 17%,var(--card));border-radius:22px;padding:16px 12px;text-align:center;font-weight:600;min-height:104px}
+.tile span{display:block;font-size:2rem}.tile small{display:block;font-weight:400;color:var(--mut);font-size:.78rem}
+.sos{width:100%;background:color-mix(in srgb,var(--coral) 18%,var(--card));color:#D14B3A;border:2px solid var(--coral);border-radius:20px;padding:14px;font-weight:600;margin-bottom:6px}
+.chip{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.8rem;font-weight:600;color:#fff}
+.g{background:var(--mint)}.y{background:#E8A800}.o{background:#FF8A3D}.r{background:#E5484D}
+.sym{margin-bottom:16px}.sym .l{display:flex;justify-content:space-between;font-weight:600}
+.sym .f{font-size:1.7rem}
+input[type=range]{width:100%;height:36px;accent-color:var(--coral)}
+.res{padding:14px;border-radius:18px;margin-top:12px;font-weight:600;display:none}
+details{border-top:1px solid var(--line);padding:12px 0}details:first-of-type{border:0}
+summary{display:flex;gap:10px;align-items:center;font-weight:600;cursor:pointer;list-style:none;min-height:44px}
+summary::-webkit-details-marker{display:none}summary .ic{font-size:1.5rem}summary .chip{margin-left:auto}
+details p{background:color-mix(in srgb,var(--sun) 22%,var(--card));padding:10px 12px;border-radius:14px;font-size:.92rem;margin-top:6px}
+.ck{display:flex;gap:12px;align-items:center;padding:10px 0;width:100%;text-align:left;min-height:48px}
+.ck b{width:28px;height:28px;border-radius:9px;border:3px solid var(--line);display:grid;place-items:center;color:#fff;flex:none}
+.ck.on b{background:var(--mint);border-color:var(--mint)}.ck.on span{text-decoration:line-through;color:var(--mut)}
+.sw{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line);gap:10px}
+.tg{width:54px;height:30px;border-radius:20px;background:var(--line);position:relative;flex:none;transition:.2s}
+.tg:after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s}
+.tg.on{background:var(--teal)}.tg.on:after{left:27px}
+nav{display:flex;background:var(--card);border-top:1px solid var(--line);padding:6px 4px 10px}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:0;font-size:.75rem;color:var(--mut);padding:4px 0;border-radius:14px;min-height:56px}
+nav button span{font-size:1.5rem}nav .on{color:var(--teal);font-weight:600;background:color-mix(in srgb,var(--teal) 12%,var(--card))}
+.sheet{position:absolute;inset:0;background:#0E1A2B88;display:none;align-items:flex-end;z-index:9}
+.sheet.on{display:flex}
+.sheet>div{background:var(--card);width:100%;max-height:82%;overflow:auto;border-radius:28px 28px 0 0;padding:18px;animation:in .25s}
+.sheet h3{margin-bottom:10px;display:flex;justify-content:space-between}
+.bub{padding:10px 14px;border-radius:18px;margin:8px 0;max-width:88%}
+.bub.q{background:var(--teal);color:#fff;margin-left:auto;border-bottom-right-radius:4px}.bub.a{background:color-mix(in srgb,var(--lilac) 16%,var(--card));border-bottom-left-radius:4px}
+.chips button{background:color-mix(in srgb,var(--lilac) 18%,var(--card));padding:9px 14px;border-radius:20px;margin:0 6px 8px 0;font-size:.9rem}
+.toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:24px;font-size:.9rem;opacity:0;pointer-events:none;transition:.3s;z-index:20;white-space:nowrap}
+.toast.on{opacity:1}
+.staff{display:none;width:100%;max-width:760px;background:var(--card);border-radius:24px;padding:20px;box-shadow:0 8px 30px #0E2B4A1A}
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.sg div{border-radius:16px;padding:12px;text-align:center;background:color-mix(in srgb,var(--c) 16%,var(--card))}.sg b{display:block;font:600 1.6rem Prompt}
+.pr{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.pr .n{flex:1;min-width:150px}.pr small{color:var(--mut);display:block}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="switch" role="tablist"><button class="on" id="vp" onclick="view('p')">👩 มุมมองผู้ป่วย</button><button id="vn" onclick="view('n')">👩‍⚕️ มุมมองพยาบาล</button></div>
+
+<div class="phone" id="phone">
+<div class="top"><div class="row"><div><small>สวัสดีตอนเช้า 🌤️ 7 ต.ค. 2569</small><h1>คุณสมศรี ใจดี</h1></div><div class="av">ศ</div></div></div>
+<main id="app">
+
+<section class="screen on" id="home">
+ <div class="card hero"><div class="ring" style="--p:50"><b>3/6</b></div><div><p>ตอนนี้คุณอยู่ที่</p><h2>เคมีบำบัด รอบที่ 3 จาก 6</h2><p>ผ่านมาครึ่งทางแล้ว เก่งมากค่ะ 💪</p></div></div>
+ <div class="card"><h3 class="h">🗺️ เส้นทางการรักษาของฉัน</h3>
+  <div class="steps"><div class="st d"><i>✓</i>วินิจฉัย</div><div class="st d"><i>✓</i>วางแผน</div><div class="st n"><i>3</i>เคมีบำบัด</div><div class="st"><i>4</i>ประเมินผล</div><div class="st"><i>5</i>ติดตาม</div></div></div>
+ <div class="card"><h3 class="h">📌 สิ่งที่ต้องทำต่อ</h3>
+  <div class="act"><div class="dt">12<br>ต.ค.</div><div>ตรวจเลือด 08:00 น.<br><small style="color:var(--mut)">งดอาหาร 8 ชั่วโมง</small></div></div>
+  <div class="act"><div class="dt">13<br>ต.ค.</div><div>พบแพทย์ 09:30 น.<br><small style="color:var(--mut)">คลินิกมะเร็ง ชั้น 2</small></div></div>
+  <div class="act"><div class="dt">15<br>ต.ค.</div><div>รับเคมีบำบัด รอบที่ 3<br><small style="color:var(--mut)">ใช้เวลาประมาณ 3–4 ชม.</small></div></div></div>
+ <div class="card" style="background:linear-gradient(135deg,#D9F7F0,#DCEEFF)"><h3 class="h">🎫 คิววันนี้ของฉัน</h3>
+  <div class="pf" style="font-size:1.4rem" id="qt">อีก 3 คิวถึงคุณ · ประมาณ 15 นาที</div>
+  <div class="bar"><i id="qb" style="width:70%"></i></div>
+  <div style="display:flex;gap:8px"><button class="btn sm" style="flex:1" onclick="qAdv()">จำลองคิวเดิน</button><button class="btn sm o" style="flex:1" onclick="toast('เช็คอินแล้ว ไม่ต้องต่อแถว ✓')">เช็คอินด้วย QR</button></div></div>
+ <div class="grid">
+  <button class="tile" style="--c:var(--coral)" onclick="sheet('meds')"><span>💊</span>ยาของฉัน<small>กินแล้วแตะติ๊ก</small></button>
+  <button class="tile" style="--c:var(--lilac)" onclick="sheet('chat')"><span>💬</span>ถามผู้ช่วย<small>ตอบจากข้อมูลจริง</small></button>
+  <button class="tile" style="--c:var(--sun)" onclick="sheet('edu')"><span>📚</span>ความรู้เฉพาะฉัน<small>อ่านง่าย ไม่เครียด</small></button>
+  <button class="tile" style="--c:var(--sky)" onclick="go('appt')"><span>🚗</span>เตรียมมา รพ.<small>เดินทางวันเดียวจบ</small></button></div>
+ <button class="sos" onclick="sheet('sos')">🆘 ต้องการความช่วยเหลือ</button>
+</section>
+
+<section class="screen" id="appt">
+ <h3 class="h">📅 นัดหมายของฉัน</h3>
+ <div class="card" style="border-left:8px solid var(--sky)"><b>จ. 12 ต.ค. · 08:00</b><div class="pf">ตรวจเลือด (CBC)</div><small style="color:var(--mut)">ห้องเจาะเลือด ชั้น 1</small><div style="display:flex;gap:8px;margin-top:10px"><button class="btn sm o" onclick="toast('ส่งคำขอเลื่อนนัดแล้ว')">เลื่อนนัด</button><button class="btn sm" onclick="toast('เพิ่มในปฏิทินแล้ว ✓')">เพิ่มในปฏิทิน</button></div></div>
+ <div class="card" style="border-left:8px solid var(--sun)"><b>อ. 13 ต.ค. · 09:30</b><div class="pf">พบแพทย์ ออนโคโลยี</div><small style="color:var(--mut)">คลินิกมะเร็ง ชั้น 2 · นำผลเลือดมาด้วย</small></div>
+ <div class="card" style="border-left:8px solid var(--mint)"><b>พฤ. 15 ต.ค. · 10:00</b><div class="pf">เคมีบำบัด รอบที่ 3/6</div><small style="color:var(--mut)">Day Care · ใช้เวลา 3–4 ชม.</small></div>
+ <div class="card"><h3 class="h">🚗 เตรียมตัวก่อนเดินทาง (บ้านหนองคาย · 55 กม.)</h3>
+  <p style="color:var(--mut);font-size:.9rem">ออกจากบ้านก่อน 06:30 น. เพื่อถึงทันเจาะเลือด</p>
+  <div id="ckl"></div><div class="bar"><i id="ckb" style="width:0"></i></div><div id="ckt" style="font-weight:600;color:var(--teal)">เตรียมแล้ว 0 / 4</div></div>
+</section>
+
+<section class="screen" id="sym">
+ <h3 class="h">❤️ วันนี้รู้สึกอย่างไรบ้าง?</h3>
+ <div class="card"><div id="sl"></div><button class="btn" onclick="sendSym()">ส่งให้ทีมพยาบาล</button><div class="res" id="res"></div></div>
+ <p style="color:var(--mut);font-size:.88rem;padding:0 6px">ระบบจะแจ้งพยาบาลเฉพาะเมื่ออาการเกินเกณฑ์ เพื่อไม่ให้ท่านถูกรบกวนโดยไม่จำเป็น</p>
+</section>
+
+<section class="screen" id="res2">
+ <h3 class="h">🧪 ผลตรวจของฉัน</h3>
+ <div class="card"><b>📈 ค่า Tumor Marker (ยิ่งต่ำยิ่งดี)</b>
+  <svg viewBox="0 0 300 110" style="width:100%;margin-top:6px"><defs><linearGradient id="gr" x1="0" x2="1"><stop offset="0" stop-color="#FF7A6B"/><stop offset="1" stop-color="#34D399"/></linearGradient></defs><polyline points="20,20 90,40 160,62 230,80 280,92" fill="none" stroke="url(#gr)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><g fill="#fff" stroke="#34D399" stroke-width="4"><circle cx="20" cy="20" r="6" stroke="#FF7A6B"/><circle cx="90" cy="40" r="6" stroke="#FF9A5B"/><circle cx="160" cy="62" r="6" stroke="#9AD66B"/><circle cx="230" cy="80" r="6"/><circle cx="280" cy="92" r="7"/></g><g fill="var(--mut)" font-size="11" text-anchor="middle"><text x="20" y="108">ม.ค.</text><text x="90" y="108">มี.ค.</text><text x="160" y="108">พ.ค.</text><text x="230" y="108">ก.ค.</text><text x="280" y="108">ก.ย.</text></g></svg>
+  <p style="color:#0E8F6B;font-weight:600">ค่าลดลงต่อเนื่อง 🎉 เป็นสัญญาณที่ดี</p></div>
+ <div class="card">
+  <details open><summary><span class="ic">🩸</span>ตรวจเลือด CBC · 10 ต.ค.<span class="chip y">ใหม่</span></summary><p>ผลนี้ใช้ดูว่าร่างกายพร้อมรับยารอบถัดไปหรือไม่ หมอจะอธิบายเพิ่มเติมในวันนัด</p></details>
+  <details><summary><span class="ic">🔬</span>Chemistry Panel · 10 ต.ค.<span class="chip g">ปกติ</span></summary><p>ค่าการทำงานของตับและไตอยู่ในเกณฑ์ปกติ</p></details>
+  <details><summary><span class="ic">📷</span>CT Chest · 28 ก.ย.<span class="chip g">ดูแล้ว</span></summary><p>มีรายงานจากรังสีแพทย์พร้อมภาพ ดูรายละเอียดฉบับเต็มได้ในไฟล์ PDF</p></details></div>
+</section>
+
+<section class="screen" id="fam">
+ <h3 class="h">👨‍👩‍👧 ครอบครัวช่วยดูแล</h3>
+ <div class="card"><div style="display:flex;gap:12px;align-items:center"><div class="av" style="background:var(--sun);color:#3A2A1E">ช</div><div><div class="pf">คุณสมชาย ใจดี</div><small style="color:var(--mut)">สามี · ผู้ดูแลหลัก</small></div></div>
+  <p style="margin:12px 0 2px;font-weight:600">คุณอนุญาตให้ผู้ดูแลเห็น:</p>
+  <div class="sw"><span>📅 นัดหมาย</span><button class="tg on" onclick="tg(this)" aria-label="นัดหมาย"></button></div>
+  <div class="sw"><span>🧪 ผลตรวจ</span><button class="tg on" onclick="tg(this)" aria-label="ผลตรวจ"></button></div>
+  <div class="sw" style="border:0"><span>❤️ บันทึกอาการ</span><button class="tg" onclick="tg(this)" aria-label="อาการ"></button></div></div>
+ <button class="btn o" onclick="toast('ส่งลิงก์เชิญทาง LINE แล้ว')">＋ เชิญผู้ดูแลเพิ่ม</button>
+ <div class="card" style="margin-top:14px"><b>🔒 ข้อมูลของคุณปลอดภัย</b><p style="color:var(--mut);font-size:.9rem">ปิดสิทธิ์ได้ทุกเมื่อ และทุกครั้งที่มีคนเปิดดู ระบบบันทึกไว้ให้ตรวจสอบ (PDPA)</p><p style="font-size:.88rem">ล่าสุด: คุณสมชาย ดูนัดหมาย วันนี้ 08:12</p></div>
+</section>
+</main>
+
+<nav><button class="on" data-s="home" onclick="go('home')"><span>🏠</span>หน้าหลัก</button><button data-s="appt" onclick="go('appt')"><span>📅</span>นัดหมาย</button><button data-s="sym" onclick="go('sym')"><span>❤️</span>อาการ</button><button data-s="res2" onclick="go('res2')"><span>🧪</span>ผลตรวจ</button><button data-s="fam" onclick="go('fam')"><span>👨‍👩‍👧</span>ครอบครัว</button></nav>
+<div class="sheet" id="sh" onclick="if(event.target==this)closeSh()"><div id="shb"></div></div>
+<div class="toast" id="tt"></div>
+</div>
+
+<div class="staff" id="staff">
+ <h2>👩‍⚕️ แดชบอร์ดพยาบาล · คลินิกเคมีบำบัด</h2><small style="color:var(--mut)">ผู้ป่วยที่ต้องติดต่อจะขึ้นบนสุด · ลองส่งอาการจากมุมมองผู้ป่วยแล้วกลับมาดูหน้านี้</small>
+ <div class="sg"><div style="--c:var(--sky)"><b>24</b>ผู้ป่วยวันนี้</div><div style="--c:var(--coral)"><b id="ac">1</b>ต้องติดต่อ</div><div style="--c:var(--mint)"><b>7</b>ข้อความใหม่</div></div>
+ <div id="pl"></div>
+</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+function toast(t){const e=$('tt');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2000)}
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id==id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.s==id));$('app').scrollTop=0}
+function view(v){$('phone').style.display=v=='p'?'flex':'none';$('staff').style.display=v=='n'?'block':'none';$('vp').classList.toggle('on',v=='p');$('vn').classList.toggle('on',v=='n')}
+function tg(b){b.classList.toggle('on');toast(b.classList.contains('on')?'เปิดสิทธิ์แล้ว':'ปิดสิทธิ์แล้ว')}
+let q=3;function qAdv(){q=q>0?q-1:3;$('qt').textContent=q?`อีก ${q} คิวถึงคุณ · ประมาณ ${q*5} นาที`:'ถึงคิวคุณแล้ว! เชิญห้องตรวจ 3 ✨';$('qb').style.width=(100-q*10-(q?0:0))+'%';if(!q)toast('🔔 แจ้งเตือนส่งไปที่ LINE แล้ว')}
+const ck=['เอกสารครบ (บัตรประชาชน + ใบนัด)','งดอาหาร 8 ชั่วโมงก่อนเจาะเลือด','เตรียมยาประจำตัวมาด้วย','มีญาติเดินทางมาด้วย'];let cd=[0,0,0,0];
+function rck(){$('ckl').innerHTML=ck.map((t,i)=>`<button class="ck ${cd[i]?'on':''}" onclick="cd[${i}]^=1;rck()"><b>${cd[i]?'✓':''}</b><span>${t}</span></button>`).join('');const n=cd.reduce((a,b)=>a+b);$('ckb').style.width=n*25+'%';$('ckt').textContent=n==4?'พร้อมเดินทางแล้ว 🎉':`เตรียมแล้ว ${n} / 4`}rck();
+const sy=[['ปวด'],['อ่อนเพลีย'],['คลื่นไส้'],['นอนไม่หลับ']];const fc=['😄','😄','🙂','🙂','😐','😕','😟','😣','😖','😭','😭'];
+$('sl').innerHTML=sy.map((s,i)=>`<div class="sym"><div class="l"><span>${s[0]}</span><span class="f" id="f${i}">😄 0</span></div><input type="range" min="0" max="10" value="0" id="r${i}" aria-label="${s[0]}" oninput="$('f${i}').textContent=fc[this.value]+' '+this.value"></div>`).join('');
+const lv={g:['ปกติ ✅ ไม่ต้องทำอะไรเพิ่ม ขอบคุณที่บันทึกค่ะ','g'],y:['เฝ้าติดตาม 🟡 พรุ่งนี้ระบบจะถามอีกครั้ง','y'],o:['พยาบาลจะติดต่อกลับภายในวันนี้ 🟠 หากอาการแย่ลงให้กดปุ่ม "ต้องการความช่วยเหลือ"','o'],r:['ติดต่อพยาบาลทันที 🔴 กดปุ่มด้านล่างเพื่อโทร หรือไปห้องฉุกเฉิน','r']};
+const P=[{n:'ลุงบุญมา แสนดี',d:'รังสีรักษา · ครั้งที่ 12/25',l:'g'},{n:'คุณประสิทธิ์ ศรีสุข',d:'เคมีบำบัด · รอบ 2/6',l:'y'},{n:'ป้าวิไล มั่นคง',d:'เคมีบำบัด · รอบ 4/6 · คลื่นไส้ 8',l:'o'},{n:'คุณสมศรี ใจดี (ตัวอย่างนี้)',d:'เคมีบำบัด · รอบ 3/6 · ยังไม่ได้บันทึกวันนี้',l:'g'}];
+const ord={r:0,o:1,y:2,g:3},nm={g:'ปกติ',y:'ติดตาม',o:'ติดต่อ',r:'ฉุกเฉิน'};
+function rpl(){P.sort((a,b)=>ord[a.l]-ord[b.l]);$('ac').textContent=P.filter(p=>p.l=='o'||p.l=='r').length;$('pl').innerHTML=P.map((p,i)=>`<div class="pr"><span class="chip ${p.l}">${nm[p.l]}</span><div class="n"><b>${p.n}</b><small>${p.d}</small></div>${p.l=='o'||p.l=='r'?`<button class="btn sm" onclick="P[${i}].l='y';P[${i}].d+=' · ติดต่อแล้ว';rpl()">โทรหา</button>`:''}<button class="btn sm o">เปิด Timeline</button></div>`).join('')}rpl();
+function sendSym(){const v=sy.map((_,i)=>+$('r'+i).value),m=Math.max(...v),k=m>=9?'r':m>=7?'o':m>=4?'y':'g',e=$('res');
+e.style.display='block';e.className='res';e.style.background=`color-mix(in srgb,var(--${k=='g'?'mint':k=='y'?'sun':k=='o'?'coral':'coral'}) 22%,var(--card))`;
+e.innerHTML=lv[k][0]+(k=='r'?'<br><button class="btn" style="margin-top:10px;background:#E5484D" onclick="sheet(\'sos\')">โทรหาพยาบาล</button>':'');
+const me=P.find(p=>p.n.includes('สมศรี'));me.l=k;me.d='เคมีบำบัด · รอบ 3/6 · อาการสูงสุด '+m+'/10 · เมื่อสักครู่';rpl();toast('ส่งให้ทีมพยาบาลแล้ว ✓')}
+const S={
+meds:['💊 ยาของฉันวันนี้',()=>['Ondansetron 8 mg · ก่อนอาหาร เช้า-เย็น','Dexamethasone 4 mg · ตามแผนเคมี','ยาบำรุงเม็ดเลือด · หลังเคมี'].map((t,i)=>`<button class="ck" onclick="this.classList.toggle('on');this.querySelector('b').textContent=this.classList.contains('on')?'✓':''"><b></b><span>${t}</span></button>`).join('')+'<p style="color:var(--mut);font-size:.88rem;margin-top:8px">ระบบแจ้งเตือนทาง LINE ตามเวลากินยา</p>'],
+edu:['📚 ความรู้สำหรับคุณ',()=>'<details open><summary><span class="ic">🩺</span>ทำความเข้าใจเคมีบำบัด</summary><p>อธิบายเป็นภาษาง่าย ๆ ว่ายาทำงานอย่างไรและต้องเตรียมตัวอย่างไร</p></details><details><summary><span class="ic">🥗</span>กินอย่างไรระหว่างรักษา</summary><p>แนวทางอาหารจากนักโภชนาการของโรงพยาบาล</p></details><details><summary><span class="ic">🧘</span>ดูแลใจ ลดความเครียด</summary><p>เทคนิคผ่อนคลาย และช่องทางพูดคุยกับทีมจิตอาสา</p></details>'],
+sos:['🆘 ต้องการความช่วยเหลือ',()=>'<button class="btn" style="background:#E5484D;margin-bottom:10px" onclick="toast(\'กำลังโทร 1669…\')">🚑 ฉุกเฉิน โทร 1669</button><button class="btn" style="margin-bottom:10px" onclick="toast(\'กำลังโทรหาพยาบาลเคส…\')">👩‍⚕️ โทรหาพยาบาลเคส</button><button class="btn o" onclick="sheet(\'chat\')">💬 ส่งข้อความหาทีมดูแล</button>']};
+const A={'นัดพรุ่งนี้คืออะไร?':'พรุ่งนี้ (8 ต.ค.) คุณไม่มีนัดค่ะ นัดถัดไปคือ ตรวจเลือด จ. 12 ต.ค. 08:00 น. ห้องเจาะเลือด ชั้น 1','ผลเลือดออกหรือยัง?':'ผล CBC วันที่ 10 ต.ค. ออกแล้วค่ะ ดูได้ที่แท็บ "ผลตรวจ"','ต้องงดอาหารไหม?':'ก่อนตรวจเลือด 12 ต.ค. ให้งดอาหาร 8 ชั่วโมง ดื่มน้ำเปล่าได้ค่ะ'};
+function ask(t){$('cl').innerHTML+=`<div class="bub q">${t}</div><div class="bub a">${A[t]}</div>`;$('cl').scrollIntoView({block:'end'})}
+function sheet(k){const b=$('shb');if(k=='chat')b.innerHTML='<h3>💬 ผู้ช่วย UDCH <button onclick="closeSh()" aria-label="ปิด">✕</button></h3><div id="cl"><div class="bub a">สวัสดีค่ะ ถามเรื่องนัดหมายและผลตรวจได้เลย 😊</div></div><div class="chips">'+Object.keys(A).map(q=>`<button onclick="ask(this.textContent)">${q}</button>`).join('')+'</div><small style="color:var(--mut)">ตอบจากข้อมูลจริงของโรงพยาบาลเท่านั้น ไม่วินิจฉัยหรือแนะนำการรักษา</small>';else b.innerHTML=`<h3>${S[k][0]} <button onclick="closeSh()" aria-label="ปิด">✕</button></h3>`+S[k][1]();$('sh').classList.add('on')}
+function closeSh(){$('sh').classList.remove('on')}
+</script>
+</body>
+</html>
