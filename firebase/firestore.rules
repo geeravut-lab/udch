@@ -16,12 +16,21 @@ service cloud.firestore {
         : null;
     }
 
+    // role จากเอกสาร users/{uid} (ที่ใช้ในแอป) — ไม่พึ่ง custom claims อย่างเดียว
+    function profileRole() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(uid()))
+        ? get(/databases/$(database)/documents/users/$(uid())).data.role
+        : null;
+    }
+
     function isAdmin() {
-      return tokenRole() == 'admin';
+      return tokenRole() == 'admin' || profileRole() == 'admin';
     }
 
     function isStaff() {
-      return tokenRole() in ['nurse', 'doctor', 'admin'];
+      return tokenRole() in ['nurse', 'doctor', 'admin']
+        || profileRole() in ['nurse', 'doctor', 'admin'];
     }
 
     function isOwner(userId) {
