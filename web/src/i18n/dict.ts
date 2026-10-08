@@ -1,0 +1,123 @@
+export type Lang = "th" | "en";
+
+const th = {
+  appName: "UDCH Care+",
+  appTagline: "เพื่อนคู่ใจตลอดเส้นทางรักษามะเร็ง",
+  hospitalName: "โรงพยาบาลศูนย์มะเร็ง จ.อุดรธานี",
+
+  navHome: "หน้าหลัก",
+  navAppointments: "นัดหมาย",
+  navResults: "ผลตรวจ",
+  navMessages: "ข้อความ",
+  navMe: "ของฉัน",
+
+  loginTitle: "เข้าสู่ระบบ",
+  loginSubtitle: "สำหรับผู้ป่วยและผู้ดูแล",
+  loginEmail: "อีเมล",
+  loginPassword: "รหัสผ่าน",
+  loginSubmit: "เข้าสู่ระบบ",
+  loginWithGoogle: "เข้าด้วย Google",
+  loginNoAccount: "ยังไม่มีบัญชี?",
+  registerLink: "สมัครสมาชิก",
+  logout: "ออกจากระบบ",
+
+  registerTitle: "สมัครสมาชิก",
+  registerName: "ชื่อ–นามสกุล",
+  registerSubmit: "สร้างบัญชี",
+  registerHasAccount: "มีบัญชีแล้ว?",
+
+  dashGreeting: "สวัสดี",
+  dashJourney: "เส้นทางการรักษาของฉัน",
+  dashNextActions: "สิ่งที่ต้องทำต่อ",
+  dashQueue: "คิววันนี้ของฉัน",
+  dashMeds: "ยาของฉัน",
+  dashChat: "ถามผู้ช่วย",
+  dashEdu: "ความรู้เฉพาะฉัน",
+  dashPrep: "เตรียมมารพ.",
+  dashSos: "ต้องการความช่วยเหลือ",
+
+  apptTitle: "นัดหมายของฉัน",
+  apptEmpty: "ยังไม่มีนัดหมาย",
+  resultsTitle: "ผลตรวจ",
+  resultsEmpty: "ยังไม่มีผลตรวจ",
+  messagesTitle: "ข้อความ",
+  messagesEmpty: "ยังไม่มีข้อความ",
+  meTitle: "ของฉัน",
+  meProfile: "โปรไฟล์",
+  meDocuments: "เอกสาร",
+  meRights: "สิทธิของคุณตามกฎหมาย",
+  meSettings: "ตั้งค่า",
+  meLang: "ภาษา",
+  meExport: "ดาวน์โหลดข้อมูลของฉัน",
+  mePolicy: "นโยบายความเป็นส่วนตัว",
+  meDelete: "ลบบัญชี",
+
+  loading: "กำลังโหลด…",
+  errorGeneric: "เกิดข้อผิดพลาด กรุณาลองใหม่",
+  save: "บันทึก",
+  cancel: "ยกเลิก",
+  back: "กลับ",
+} as const;
+
+const en: { [K in keyof typeof th]: string } = {
+  appName: "UDCH Care+",
+  appTagline: "Your companion through cancer care",
+  hospitalName: "Udonthani Cancer Hospital",
+
+  navHome: "Home",
+  navAppointments: "Appointments",
+  navResults: "Results",
+  navMessages: "Messages",
+  navMe: "Me",
+
+  loginTitle: "Sign in",
+  loginSubtitle: "For patients and caregivers",
+  loginEmail: "Email",
+  loginPassword: "Password",
+  loginSubmit: "Sign in",
+  loginWithGoogle: "Continue with Google",
+  loginNoAccount: "No account yet?",
+  registerLink: "Register",
+  logout: "Sign out",
+
+  registerTitle: "Create account",
+  registerName: "Full name",
+  registerSubmit: "Create account",
+  registerHasAccount: "Already have an account?",
+
+  dashGreeting: "Hello",
+  dashJourney: "My care journey",
+  dashNextActions: "Next actions",
+  dashQueue: "My queue today",
+  dashMeds: "My medicines",
+  dashChat: "Ask assistant",
+  dashEdu: "For me",
+  dashPrep: "Prepare visit",
+  dashSos: "Need help",
+
+  apptTitle: "My appointments",
+  apptEmpty: "No appointments yet",
+  resultsTitle: "Results",
+  resultsEmpty: "No results yet",
+  messagesTitle: "Messages",
+  messagesEmpty: "No messages yet",
+  meTitle: "Me",
+  meProfile: "Profile",
+  meDocuments: "Documents",
+  meRights: "Your legal rights",
+  meSettings: "Settings",
+  meLang: "Language",
+  meExport: "Download my data",
+  mePolicy: "Privacy policy",
+  meDelete: "Delete account",
+
+  loading: "Loading…",
+  errorGeneric: "Something went wrong. Please try again.",
+  save: "Save",
+  cancel: "Cancel",
+  back: "Back",
+};
+
+export const dictionaries = { th, en } as const;
+export type DictKey = keyof typeof th;
+export type Dict = { [K in DictKey]: string };
