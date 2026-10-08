@@ -76,7 +76,11 @@ service cloud.firestore {
       allow read: if isStaff()
         || (signedIn() && resource.data.patientId == uid())
         || (signedIn() && isCaregiverOf(resource.data.patientId));
-      allow write: if isStaff();
+      allow create: if isStaff()
+        || (signedIn() && request.resource.data.patientId == uid());
+      allow update, delete: if isStaff()
+        || (resource.data.patientId == uid()
+            && request.resource.data.patientId == resource.data.patientId);
 
       match /steps/{stepId} {
         allow read: if isStaff()
@@ -84,7 +88,8 @@ service cloud.firestore {
           || isCaregiverOf(
                get(/databases/$(database)/documents/journeys/$(journeyId)).data.patientId
              );
-        allow write: if isStaff();
+        allow write: if isStaff()
+          || get(/databases/$(database)/documents/journeys/$(journeyId)).data.patientId == uid();
       }
     }
 
@@ -105,7 +110,11 @@ service cloud.firestore {
       allow read: if isStaff()
         || resource.data.patientId == uid()
         || caregiverCanSeeResults(resource.data.patientId);
-      allow write: if isStaff();
+      allow create: if isStaff()
+        || (signedIn() && request.resource.data.patientId == uid());
+      allow update, delete: if isStaff()
+        || (resource.data.patientId == uid()
+            && request.resource.data.patientId == resource.data.patientId);
     }
 
     // ----- medications / treatmentCycles -----
@@ -113,14 +122,22 @@ service cloud.firestore {
       allow read: if isStaff()
         || resource.data.patientId == uid()
         || isCaregiverOf(resource.data.patientId);
-      allow write: if isStaff();
+      allow create: if isStaff()
+        || (signedIn() && request.resource.data.patientId == uid());
+      allow update, delete: if isStaff()
+        || (resource.data.patientId == uid()
+            && request.resource.data.patientId == resource.data.patientId);
     }
 
     match /treatmentCycles/{id} {
       allow read: if isStaff()
         || resource.data.patientId == uid()
         || isCaregiverOf(resource.data.patientId);
-      allow write: if isStaff();
+      allow create: if isStaff()
+        || (signedIn() && request.resource.data.patientId == uid());
+      allow update, delete: if isStaff()
+        || (resource.data.patientId == uid()
+            && request.resource.data.patientId == resource.data.patientId);
     }
 
     // ----- conversations / messages -----
